@@ -1,0 +1,725 @@
+# Section 0: grading
+
+  - *If you currently have a grade in the course that you are satisfied with:*
+    - **You do not need to complete this Final!** 
+    - The grade indicated on your Challenge Feedback sheet (on ELMS under 
+      Challenge 5 feedback) will be your final course grade.
+  
+  - *If you currently have less than a B in the course and you want to get a B:*
+    - Complete Sections 1 and 2, including all items where it says 
+	  *COMPLETE THE FOLLOWING* or *ANSWER THE FOLLOWING*.
+    - If you are missing any previous Challenges, complete the items that 
+      indicate something like "if you are missing Challenge 1".
+	
+  - *If you are going for an A in the course, you will need to:*
+    - Complete all three Sections, including all items where it says 
+	  *COMPLETE THE FOLLOWING* or *ANSWER THE FOLLOWING*.
+    - If you are missing any previous Challenges, complete the items that 
+      indicate something like "if you are missing Challenge [X]".
+    - Decide if you want to do a Multiple Regression (multiple predictors), 
+      or a Logistic Regression (a binary categorical response variable).  
+      Complete the items indicated for those, in addition to other items.
+
+  - *When completing sections that are for missing Challenges:*
+    - The code provided should help you complete it.
+    - The instructions and Readiness from those Challenges may contain
+      additional help and explanation if you need it.
+
+  - **IF YOU INTEND TO COMPLETE A LOGISTIC REGRESSION**:
+	- Use the `spotify-2023_CLEAN.csv` data set. The other data sets may not have
+      appropriate data for logistic regression.
+    - Pick either the `solo` or `major` variables to be your response variable 
+      (aka dependent variable, variable you are trying to predict).
+    - The `solo` variable is coded 1 if the song artist is a solo artist, 
+      and 0 if there is more than one person in the group.
+    - The `major` variable is coded 1 if the song is in a major key, and 0 if not.
+
+  - **GENERAL TIP**:
+    - The data sets were all selected because there was "something to find" in
+      all of them. You might want to try a few different predictors, etc. before
+      settling on one. However, you are NOT required to find anything 
+      "statistically significant."
+    - All you need to do is to develop reasonable questions about which variable or
+      variables might predict another variable in the data, follow the procedure
+      below to test that hypothesis, and discuss the finding, whether or not you
+      found anything significant.  It's the process that matters!
+    - Good luck!
+
+# SECTION 1: exploratory analysis
+
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+```
+
+## 1. Load Data
+
+*COMPLETE THE FOLLOWING*
+  - Indicate which data set you are using for the Final.
+  - Load the data into R.
+  - See the code chunk below as an example.
+  - Throughout the examples, change YOURDATA to a variable of your choice.
+  - For example, you could pick "airlines" or "delays" if you are using
+    the Airline Delays data.
+    
+The data I will be using is the Racial and Social Equity Composite Index. It combines information on race, ethnicity, and related demographics with data on socioeconomic and health disadvantages to identify where priority populations make up relatively large proportions of neighborhood residents in the city of Seattle.
+
+```{r}
+data <- read_csv("Racial_and_Social_Equity_Composite_Index_Current.csv")
+```
+
+  - Check the top few rows and the column names to make sure the data was 
+    read in correctly. (Example code below.)
+
+```{r}
+# DONE
+head(as.data.frame(data))
+colnames(data)
+```
+# DONE
+## 2. Describe variables of interest
+
+*ANSWER THE FOLLOWING*
+  - Which variables are you using in your analysis?
+  the variables that i will be using in my analysis is the "ACRES_TOTAL" and 
+  "PCT_PEOPLE_OF_COLOR"
+  
+  - Describe each of them informally:
+    - Include the name of the variable and what it represents.
+    ACRES_TOTAL: this is the total acres of the different Seattle neighborhoods
+    PCT_PEOPLE_OF_COLOR: the sub-indices of people of color in Seattle's 
+    neighborhoods 
+    PCT_ENGLISH_LANG_LEARNERS: the sub-indices of english language learners in 
+    Seattle's neighborhoods
+    
+  - Which variable is your **response** variable, (aka dependent variable or 
+    outcome variable) that you are trying to predict?
+    the response variable that i am trying to predict is the 
+    PCT_ENGLISH_LANG_LEARNERS column
+    
+  - Which variable(s) is/are your **predictor** variables (aka independent
+    variable), which you are using to predict the response?
+    the predictor variables that i will use are the PCT_PEOPLE_OF_COLOR column 
+    and the ACRES_TOTAL column
+  
+## 3. Articulate research questions
+
+*ANSWER THE FOLLOWING*:
+  - Why is it reasonable to expect that your predictor(s) might predict your 
+    response variable?
+    it is reasonable 
+    
+  - Are you expecting positive or negative relationships? Why?
+    - Tip: a negative relationship in a regression means that (a) the parameter 
+      estimate is negative, and (b) as the predictor values get higher, the 
+      response value gets lower.
+  - If you find a positive or negative relationship, what would that mean? 
+    Why would it be interesting? (as in, real world impact)
+  - For example, who might it matter for, if you find a relationship between
+    variables?
+  
+  
+## 4. Univariate plots and details
+
+*COMPLETE THE FOLLOWING*
+  - Create a histogram or density plot for each of your variables of interest, 
+    both predictor(s) and response variables.
+
+```{r}
+#DONE
+acres_total <- data$ACRES_TOTAL
+ppl_of_color <- data$PCT_PEOPLE_OF_COLOR
+english_learners <- data$PCT_ENGLISH_LANG_LEARNERS
+
+ggplot(data, aes(x = acres_total)) + geom_histogram()
+ggplot(data, aes(x = ppl_of_color)) + geom_histogram()
+ggplot(data, aes(x = english_learners)) + geom_histogram()
+```
+
+  - The following does the same, but with a density plot:
+
+```{r}
+# DONE
+ggplot(data, aes(x = acres_total)) + geom_density() 
+ggplot(data, aes(x = ppl_of_color)) + geom_density()
+ggplot(data, aes(x = english_learners)) + geom_density()
+```
+
+*COMPLETE THE FOLLOWING* #DONE
+  - For each plot, comment on whether the variable looks like it is distributed 
+    roughly like a normal distribution.
+    for ACRES_TOTAL, PCT_PEOPLE_OF_COLOR, and PCT_ENGLISH_LANG_LEARNERS are all 
+    not normally distributed. they are all skewed to the left of the graph
+    
+  - Comment on whether any variables seem like a good candidate for 
+    log-transformation, and if so, plot it both transformed and untransformed.
+    
+    the data I have selected is not the best for a log transformation, but 
+    since it is skewed, i will log transform the all my data
+  
+  - You should use a histogram or barplot if you are examining a categorical
+    variable.
+
+```{r}
+# DONE
+log_acres_total <- log(acres_total)
+log_ppl_of_color <- log(ppl_of_color)
+log_english_learners <- log(english_learners)
+
+ggplot(data, aes(x = acres_total)) + geom_density() + labs(title = "non transformed acres total") 
+ggplot(data, aes(x = ppl_of_color)) + geom_density() + labs(title = "non transformed ppl of color")
+ggplot(data, aes(x = english_learners)) + geom_density() + labs(title = "non transformed english learners")
+
+ggplot(data, aes(x = log_acres_total)) + geom_density() + labs(title = "log transformed acres total") 
+ggplot(data, aes(x = log_ppl_of_color)) + geom_density() + labs(title = "log transformed ppl of color")
+ggplot(data, aes(x = log_english_learners)) + geom_density() + labs(title = "log transformed english learners")
+
+summary(data)
+```
+
+To get the standard deviation, the following gets the standard deviation of a 
+column called VAR from a data frame called YOURDATA:
+
+```{r}
+# DONE
+sd(acres_total)
+sd(ppl_of_color)
+sd(english_learners)
+```
+
+To generate theoretical densities from a normal distribution, you will need the 
+mean and standard deviation of the variable of interest.  The following works 
+for a variable called VAR for a data frame YOURDATA:
+
+```{r}
+#DONE
+x_grid_TA <- seq(min(acres_total), max(acres_total), length.out = length(acres_total))
+normal_densities_TA <- dnorm(x_grid_TA, mean = mean(acres_total), sd = sd(acres_total))
+
+x_grid_POC <- seq(min(ppl_of_color), max(ppl_of_color), length.out = length(ppl_of_color))
+normal_densities_POC <- dnorm(x_grid_POC, mean = mean(ppl_of_color), sd = sd(ppl_of_color))
+
+x_grid_EL <- seq(min(english_learners), max(english_learners), length.out = length(english_learners))
+normal_densities_EL <- dnorm(x_grid_EL, mean = mean(english_learners), sd = sd(english_learners))
+```
+
+Then the following plots these normal densities as a blue curve, along with the 
+(empirical) density plot of the variable VAR in data frame YOURDATA.
+
+```{r}
+#DONE
+ggplot(data, aes(acres_total)) + geom_density() +
+	geom_line(aes(x = x_grid_TA, y = normal_densities_TA, color = "blue"))
+
+ggplot(data, aes(ppl_of_color)) + geom_density() +
+	geom_line(aes(x = x_grid_POC, y = normal_densities_POC, color = "red"))
+
+ggplot(data, aes(english_learners)) + geom_density() +
+	geom_line(aes(x = x_grid_EL, y = normal_densities_EL, color = "yellow"))
+```
+## 5. Multivariate plots
+
+*COMPLETE THE FOLLOWING*
+  - Create a scatter plot with the predictor on the x-axis and the response on 
+    the y-axis.
+  
+**IF YOU ARE MISSING CHALLENGE 4**:
+  - Create scatter plots with and without log transformations of both response 
+    and predictor variables (unless a variable is categorical).
+	
+**IF YOU ARE DOING MULTIPLE REGRESSION**:
+  - Make scatter plots between each predictor and the response, separately.
+  - Also make a scatter plot between two of your *predictors*.
+  - Do they appear to be related? If so, is that potentially a problem?
+  
+  my two predictors ACRES_TOTAL and PCT_PPL_OF_COLOR do not seem to be related.
+  i don't think it is a problem because it could help with multicollinearity, 
+  independence of Variables, and other things as well.
+	
+The following code creates a scatter plot for predictor PRED and response RESP 
+in data frame YOURDATA:
+
+```{r}
+#DONE
+ggplot(data, aes(x = acres_total, y = english_learners)) + geom_point()
+ggplot(data, aes(x = ppl_of_color, y = english_learners)) + geom_point()
+ggplot(data, aes(x = ppl_of_color, y = acres_total)) + geom_point()
+```
+
+The following creates the split density plot if the RESPONSE variable is binary 
+categorical:
+
+```{r}
+# not applicable
+ggplot(YOURDATA, aes(x = PRED)) + geom_density(aes(fill = as.factor(RESPONSE)), alpha = .5)
+```
+
+# ANSWER
+## 6. Transformations for model-fitting
+
+*COMPLETE THE FOLLOWING*
+  - After having plotted variables and some relationships, are there any 
+    transformations you think you should perform for the analysis? Why or why not?
+  - If you decide to transform a variable, create a new column with the
+    transformed value, to make it easier to plot and include in your model.
+
+**IF YOU ARE DOING LOGISTIC REGRESSION**:
+  - If you are just using a single predictor, you should *center* that predictor.
+  - See discussion below on what centering is and how to do it.
+  - If you have more than one predictor, read the discussion below for Multiple
+    Regression, and decide whether to center or standardize your predictors.
+  - Do *not* transform your response variable, because it needs to stay 0s and 1s
+    for a logistic regression.
+
+**IF YOU ARE DOING MULTIPLE REGRESSION**:
+  - Think about how you want to interpret the estimates of the effects of 
+    predictors with respect to how they relate to the response variable. More
+    specifically, do you want to:
+    1. interpret an effect as "a change of one [unit] of the predictor corresponds 
+       to a change in [parameter value] units of the response variable", OR
+    2. interpret an effect as "a change in one standard deviation of the 
+       predictor corresponds to a change in [parameter value] units of the response"?
+
+  - For example, if you had an effect where a change in weight (predictor, where
+    the unit was pounds) corresponded to an increase in price (response), you 
+    could either say:
+    1. a change in X pounds corresponds to a change in Y dollars, OR
+    2. a change in 1 standard deviation from the average weight corresponds
+       to a change in Y dollars
+	   
+  - The difference between these is whether you would like to talk about the 
+    predictors in absolute terms (the first one) or relative terms (the second one).
+	
+  - If you want to talk in absolute terms, you should **center** your predictors.
+  - If you want to talk in relative terms, you should convert the predictors to 
+    **z-scores**.
+  - See below for explanations and how to do both of these in code.
+  
+A "centered" variable is a variable where the mean is zero. The reason to do 
+this in a multiple regression is to make it easier to interpret the effects of 
+other predictors. Estimates of parameters, including the intercept and any slope 
+parameters, are all interpreted as "the estimate where other parameters are 
+zero." It's often the case that this doesn't make much sense with uncentered 
+variables.
+
+For example, if you had a model predicting the price of diamonds (in dollars) 
+by weight (in carats) and depth (in millimeters), but weight and depth were 
+uncentered, then the intercept would represent the average price for diamonds 
+with a weight and depth of zero, but having a diamond with no weight and no 
+depth doesn't make sense. Furthermore, you would interpret the effect of weight 
+as the effect of a change in carats where depth was zero millimeters, which also 
+doesn't make much sense. If weight and depth were centered, then the intercept 
+would be interpreted as "the average diamond price for a diamond with an average 
+weight and an average depth", in other words, the average price of an average 
+diamond, which is a lot easier to interpret.  This is because centering changes 
+what the "zero" point means, because a value of zero for a centered weight 
+variable means "the average weight", not "a weight of zero carats".
+
+Converting a variable to a *z-score* is just one further step, where you take 
+the centered variable and you divide it by the standard deviation of that 
+variable. What this does is put the variable on a "relative" scale.  So instead 
+of a change in 1 value meaning a change in one unit (like carats or millimeters), 
+it represents a change in 1 standard deviation.  This can be helpful if you 
+would rather be able to say things like "an unusually heavy diamond (change in 
+2 standard deviations) would be much more valuable, all else equal, than an 
+unusually deep diamond."  In other words, it's helpful to convert predictors to 
+z-scores (also called *standardizing* variables) if you want to put variables on 
+a common scale so that you can compare their effects, like saying that weight 
+has a larger effect than depth. Note that z-scores are also centered, so all of 
+the interpretation of centering also applies.
+
+It is up to you whether you center or standardize (convert to z-scores) your 
+predictors, but for this assignment, you should do one or the other (if you are 
+doing multiple regression).
+
+To center a predictor VAR, you should create a new column that represent the 
+variable minus its mean. Make sure to do this for **each** predictor (but not 
+the response variable). I recommend adding a lowercase "c" (for "centered") to 
+the variable name to represent your centered variable, or a "z" to represent a 
+standardized (z-score) variable. It helps you remember which variable it came 
+from originally, and it helps remind you that it's centered/standardized.
+
+```{r}
+# DONE
+# YOURDATA$cVAR <- YOURDATA$VAR - mean(YOURDATA$VAR)
+acres_total_c <- acres_total - mean(acres_total)
+ppl_of_color_c <- ppl_of_color - mean(ppl_of_color)
+english_learners_c <- english_learners - mean(english_learners)
+```
+
+To convert a predictor to z-scores, simply divide the centered variable by the 
+standard deviation:
+
+```{r}
+# DONE
+#YOURDATA$zVAR <- (YOURDATA$VAR - mean(YOURDATA$VAR))/sd(YOURDATA$VAR)
+acres_total_z <- (acres_total - mean(acres_total))/sd(acres_total)
+ppl_of_color_z <- (ppl_of_color - mean(ppl_of_color))/sd(ppl_of_color)
+english_learners_z <- (english_learners - mean(english_learners))/sd(english_learners)
+
+log_acres_total_z <- (log_acres_total - mean(log_acres_total))/sd(log_acres_total)
+log_ppl_of_color_z <- (log_ppl_of_color - mean(log_ppl_of_color))/sd(log_ppl_of_color)
+log_english_learners_z <- (log_english_learners - mean(log_english_learners))/sd(log_english_learners)
+```
+
+
+# Section 2: Model Fitting
+
+## 1. Fit your model
+
+*COMPLETE THE FOLLOWING*
+  - Use the `lm()` function to fit your model (unless you are performing 
+    logistic regression).
+  - Include the intercept by representing it as a "1" in the model.
+  
+To fit a model called MODEL with two predictors zPRED1 and zPRED2 predicting a 
+response RESP in data frame YOURDATA:
+
+(As throughout, alter the code to fit the names of your variables.)
+```{r}
+#DONE
+data_MODEL <- lm(english_learners ~ 1 + acres_total_z + ppl_of_color_z, data = data)
+```
+
+
+
+```{r}
+# not applicable
+LOGISTIC_MODEL <- glm(log_english_learners ~ 1 + log_acres_total_z + log_ppl_of_color_z, data = data, family = "binomial")
+```
+
+*COMPLETE THE FOLLOWING*:
+  - Print out the estimates and standard errors of the model.
+  - Describe the slope effect(s) (not the Intercept):
+    - Are the effects positive or negative?
+    the slope effects are all positive
+    
+    - Which slope seems to be the largest (in magnitude, regardless of 
+      positive/negative)?
+      the largest slope seems to be the ppl_of_color variable
+      
+    - Do any effects seem large compared to their standard errors? 
+      (i.e., at least 2 times the size of their standard error)
+      the effects seem to be large for the ppl_of_color variable, seeing that 
+      the standard error is twice as big as the estimate. but for the 
+      acres_total variable, the effects do not seem to be large, as the 
+      estimates are not twice as big as the standard error.
+
+To see the estimates and standard errors (alone) for a model called MODEL:
+
+```{r}
+summary(data_MODEL)$coef[, c("Estimate", "Std. Error")]
+```
+
+
+```{r}
+ggplot(data, aes(ppl_of_color_z, english_learners)) + geom_point() +
+    geom_abline(intercept =  0.067626143, slope = coef(data_MODEL)[2], color = "blue")
+```
+
+# STOP HERE IF YOU ARE ONLY TRYING TO GET TO A GRADE OF *B* IN THE COURSE
+
+  - Section 3 is for people trying to get an A.
+
+# SECTION 3: Inference and Interpretation
+
+## 1. Examine residual plots
+
+  - In order to examine how well the model is fitting, it is a good idea to 
+    examine the model residuals.
+  - Two good visualizations are:
+    1. A histogram or density plot of the residuals.
+    2. A scatter plot with model predictions on the x-axis and residuals on the y-axis.
+	
+  - The histogram of residuals should ideally look roughly like a normal
+    distribution. If it looks very non-normal, you might want to reconsider 
+    transformations, or it might indicate some other problem with the model.
+  - The scatter plot should look largely random. If there are any strong 
+    patterns,  it might again suggest that the model is making systematic errors
+    of one kind of another.
+  
+In order to plot these values, it's easiest if they are first added as new 
+columns to the data frame. To create a column of model residuals from a model 
+called MODEL for a data frame YOURDATA:
+
+```{r}
+data$residuals <- data_MODEL$resid
+```
+
+To create a column of model predictions:
+
+```{r}
+data$model_predictions <- predict(data_MODEL)
+```
+
+Histograms, density plots, and scatter plots can then be made using these 
+variables as normal (see earlier code example for help).
+
+*COMPLETE THE FOLLOWING*
+  - Create the two plots described above (histogram of residuals, and scatter 
+    plot of residuals by model predictions).
+  - After creating these two plots , comment on whether there are any strong 
+    patterns, and if so, what they might indicate.
+done in an earlier section
+
+## 2. Report null hypothesis significance tests for parameters
+  
+*COMPLETE THE FOLLOWING*
+  - Report if any of the slope (not Intercept) parameters appear to be 
+    statistically significant.
+  
+The easy way to examine test results for a model called MODEL is:
+  
+```{r}
+summary(data_MODEL)
+```
+
+  - The column `Pr(>|t|)` gives the p-value for the t-test of that parameter.
+  - If the p-value is less than 0.05, you can say:
+    - "The slope of [PRED] was [estimate], and was statistically significant 
+      from zero at the p < .05 level."
+	- or: "The effect of [PRED] reached statistical significance at the p < .05 
+      level."
+
+**IF YOU ARE DOING MULTIPLE REGRESSION**:
+  - Report on each significant effect.
+  - Print the full table of coefficients (using `summary(MODEL)`)
+
+## 3. Model comparison
+
+*COMPLETE THE FOLLOWING*
+  - Compare your model to a model with no predictors, just the intercept. (You 
+    will need to fit this model before you can make comparisons.)
+  - Compare these two models with a test of statistical significance, and by 
+    comparing their AIC model fit statistics.
+  - To compare them with AIC, simply compute the AIC value of each model, and 
+    report those values. The lowest value indicates the better-fitting model.
+  
+To fit a model without any predictors, use a formula with just a "1" on the 
+predictor side, representing the intercept:
+
+```{r}
+data_MODEL_null <- lm(english_learners ~ 1, data = data)
+#LOGISTIC_MODEL_null <- glm(RESP ~ 1, data = YOURDATA, family = "binomial")
+```
+  
+To compute the AIC value of a model called MODEL:
+
+```{r}
+AIC(data_MODEL)
+```
+
+To perform a Wald test (aka F-test) on two models (one of which must have a subset 
+of the predictors of the larger model):
+
+```{r}
+anova(data_MODEL, data_MODEL_null)
+```
+
+*COMPLETE THE FOLLOWING*
+  - To report the results of the F-test, you need:
+    - the degrees of freedom (DoF): there are two DoFs for an F-test, the
+      "numerator" DoF and the "denominator" DoF
+    - the F-value
+    - the p-value
+  - For example, if the numerator DoF is 2, the denominator DoF is 50, 
+    the F is 4.25, and p-value is < .05, you would say:
+    - "An F-test (or Wald test) comparing [larger model] to [smaller model] was
+      statistically significant at the p < .05 level (F[2, 50] = 4.25), indicating
+      that the [larger model] was a better model than the [smaller model]."
+  - To find these values in the output in R:
+    - `Df` is the "numerator degrees of freedom"
+    - `Res.Df` is the "denominator degrees of freedom"
+    - `F` is the F-value
+    - `Pr(>F)` is the p-value
+    
+    the F-value of the model is 216.14 and the p-value of the model is 2.2e-16
+    the DoF numerator is -2 and the DoF denominator is 179
+    
+    An F-test (or Wald test) comparing data_MODEL_null to data_MODEL was
+    statistically significant at the p < .05 level (F[-2, 179] = 216.14), 
+    indicating that the data_MODEL was a better model than the data_MODEL_null.
+
+  
+## 4. Interpretation
+
+  - This is the hardest part, because it requires some thinking.
+  - Think about the questions you started with. Why does this analysis matter? 
+    Why is it interesting that a predictor (significantly) predicts the outcome?
+
+*COMPLETE THE FOLLOWING*
+  - In order to help address these questions, phrase the effect of predictors not 
+    in terms of statistical significance (you already did that above), but in terms 
+    of the size of the effect.
+  - To compute an effect size, first think about what the predictor represents, 
+    and think about what would be a meaningful level of change in that predictor.
+  - Unless you have transformed the variable, the slope estimate you get from your
+    model means "for every 1 unit change in X, the model predicts a change of
+    [estimate] in Y". But when reporting the results, you should think about whether
+    "1 unit of change in X" makes sense, or whether it would be best to scale that
+    up or down.
+  - For example, if you were discussing the effect of the weight of a diamond on
+    price, and your regression used weight in carats, then the parameter estimate
+    would mean "the effect on price from a change of 1 carat." But a change of 1
+    whole carat is huge, when you are talking about diamonds!  It might make more
+    sense to talk about a half-carat or quarter-carat.  In other words, you might
+    like to say something like, "the change in price by going up in weight by 0.25
+    carats is estimated to be [X] dollars."
+  - In order to calculate the "[X]" in "[X] dollars" in this example, you would
+    take the parameter estimate and divide it by 4. In other words, since the 
+    parameter estimate always means "change in Y from a 1-unit change in X", if
+    you want to get the change in Y from a change in 1/4 units of X, you need to
+    divide the estimate by 4 as well.  Similarly, if you wanted to calculate the 
+    change in Y from a change in 10 units of X, you'd multiply the model parameter 
+    estimate by 10.
+  - If you transformed your predictors into z-scores for the model-fitting, then
+    remember that "one unit of X" actually means "1 standard deviation of X". You
+    can report the effect this way, but then you should also remind the reader
+    what 1 standard deviation corresponds to.
+  - For example, in the hypothetical diamond analysis, you could say:
+    - "For a change in 1 standard deviation of weight (0.32 carats), the model
+      predicts a change of [X] dollars in price."
+	
+	answered in the section below
+	
+**IF YOU ARE DOING MULTIPLE REGRESSION**
+  - Report the effect of each predictor, or combine them.
+  - If you have several predictors and only some of them are statistically
+    significant, you can report just the significant effects.
+  - If you want to combine them, you could say something like, "if you increased
+    [PRED1] by [X1], [PRED2] by [X2], and [PRED3] by [X3], the overall predicted
+    change in [Y] would be [result]."
+    
+    if you increased English Learners by the total of acres or count of ppl of 
+    color, the overall predicted change in english learners would be a decrease 
+    in people for the geographic locations.
+	
+```{r}
+odds_to_percentage <- function(odds){
+    percentage <- odds/(1+odds)
+    return(percentage)
+}
+odds_to_percentage(2)
+```
+	
+*COMPLETE THE FOLLOWING*
+  - When reporting your effects, you also need to report something about the
+    uncertainty.
+  - This typically takes the form of giving a "plus/minus" or a range around the
+    estimate.
+  - For example, you might say something like, "for a change of 1 [unit] in X, the
+    model predicts we would see a change of [estimate] in Y, plus or minus [E]."
+  - The question is how to determine the width of the plus/minus. One standard
+    option is to add and subtract 2 standard errors. This is related to the
+    idea of a confidence interval, because +/- 2 standard errors is roughly the
+    same as a 95% confidence interval. So I recommend you use this when you are
+    reporting effects in "real world impact" terms.
+  - For example, if the effect of a change in 1 unit of X (i.e., the parameter
+    estimate from the model) is 10, with a standard error of 3, you would say
+    something like:
+    - "for a change in 1 [unit] of [X variable], the model predicts an average
+      change in 10 [units] of [Y variable], plus or minus 6 (i.e., a change between 
+	  4 and 16 [units])."
+	  
+	  the weights, or counts, of each person in this dataset is different:
+	  Persons of color (weight: 1.0) 
+	  English language learner (weight: 0.5)  
+	  Foreign born (weight: 0.5)
+	  
+	  for ACRES_TOTAL vs PCT_ENGLISH_LANG_LEARNERS, for a change of 1 count of a 
+	  person in X, the model predicts we would see a change of 0.005991248 in Y, 
+	  plus or minus 0.003257415
+	  
+	  for PCT_PPL_OF_COLOR vs PCT_ENGLISH_LANG_LEARNERS, for a change in 1 count 
+	  of a person in X, the model predicts an average change in 0.067626143 in Y, 
+	  plus or minus 0.003257415.
+	  
+**IF YOU TRANSFORMED YOUR VARIABLE(S)**
+  - If you transformed your variables, you will need to transform the results back
+    to something that is easier to interpret.
+  - For example, if you log-transformed a response variable that was originally in
+    dollars, you will need to transform the results back to dollars to make the
+    results more understandable.
+  - The function `exp()` is the inverse of `log()`, so if you need to take a log-
+    transformed variable and put it back on the original scale, use `exp()`.
+  - Additionally, you will not be able to interpret the results without adding in
+    the intercept, because if you compute changes in the log scale without *first*
+    adding the intercept, the calculations will be way off.
+  - As a full example, imagine you are using weight (in carats) to predict the
+    price of diamonds, but you log-transformed the price before fitting the model.
+    - Also assume we standardized (converted to z-scores) the weight predictor.
+    - Now let's say the model results indicated an Intercept of 8.5 and a parameter
+      estimate of 1.5 for the effect of weight with a standard error of 0.3.
+    - We can interpret this as meaning that for every change of 1 standard deviation 
+      in weight, the model predicts a change of 1.5 log-dollars. But this is hard to
+      understand, so it's our job to convert these numbers back to units that people
+      can more easily understand.
+    - The impact of going up a standard deviation from an average diamond would 
+      be a change of 1.5, but since we need to include the intercept when making our 
+      conversions, that 1.5 takes us from an 8.5 (the intercept) to a 10. Exp(8.5) 
+      is close to $5000, and exp(10) is around $22,000.
+    - Note that we can't just compute `exp(1.5)` (which is about 4.5) and say that
+      the effect of going up a standard deviation in weight results in raising the
+      price by $4.50. This is because we forgot to include the intercept. But if we
+      are thinking about the interpretation, this seems clearly wrong, in terms of 
+      how the prices of diamonds work!
+    - In short, if we are trying to convert results from log space back to regular 
+      units, we can't ignore the intercept in our calculations, and we have to add 
+      the effects to the intercept *before* we do our exponential conversion.
+    - If we use +/- 2 standard errors for our uncertainty, and our standard error 
+      is 0.3, then we add a plus/minus 0.6 to the prediction.
+    - In this example, it would mean that the predicted change would be from an 
+      8.5 (our intercept) to 10 (because we added the effect of 1.5), and then we
+      add +/- 0.6, meaning the final prediction is between 9.4 and 10.6. To get
+      these values from the log scale back to dollars, we'd end up with exp(9.4)
+      and exp(10.6), which would be around $12,000 and $40,000, respectively.
+
+    - So the final reported statement would read something like the following:
+	- "In our model, as weight increased, so did price, which was not surprising.
+      In our data, an average diamond weighed around 1 carat. For a diamond that
+      weighed 1 standard deviation (roughly 0.5 carats) more than average, the
+      model predicts an expected price of roughly $22,000, within a range of
+      uncertainty with 95% confidence between $12,000 and $40,000."
+    - Work through any conversions you need to, and try to report your results
+      in a similar manner.
+	  
+**IF YOU ARE DOING MULTIPLE REGRESSION**
+  - Make sure you report this "plus/minus" uncertainty when reporting the effects
+    of each predictor you reported above.
+
+*COMPLETE THE FOLLOWING*
+  - Now that you have provided estimated predictions along with a range of 
+    uncertainty, you need to comment on the importance of the finding. In short,
+    does this finding matter?
+  - There is no single right answer here, so just think about what the effects might
+    mean in the real world.
+  - This should circle back to the questions you had in Section 1.
+  - For example, if you were trying to predict the number of streams in Spotify,
+    are the effects large enough to care about?  Even if an effect was "statistically
+    significant", if the real-world meaning was that an artist would have to make
+    a big change in their music to get on average 10 more streams per year, then
+    that might not be worth it.  But if a change might results in millions of
+    additional streams, that might be.
+  - Again, there is no right or wrong answer here (for the purposes of this
+    assignment), but you should think about what the model results mean, think
+    about the effect sizes above, and reason about whether the results mean anything
+    that might be important to someone.
+    
+    i believe that the finding all of these variable does matter in this 
+    context because it would provide helpful insight on identifying what 
+    priority populations occupy what neighborhoods. this would help with also 
+    identifying what type of assistance is needed at each geographic location. 
+    for example, this data also analyzes the subindicies of people with 
+    disabilities and poverty. it provides a lot of information so the city of
+    Seattle knows where to direct their resources and also maybe to help 
+    predict growing populations.
+    
+	
+# Submission
+
+  - Congratulations, you're done!
+  - (But if you're doing logistic regression, make sure to consult the additional
+    document.)
+  - Please submit your copy of this .Rmd file on ELMS as your final project.
+  - Thank you, and have a great winter break!
