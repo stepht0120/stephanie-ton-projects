@@ -1,0 +1,39 @@
+attribute_name,description,data_type,example_vaue,unit
+health_service_area,A description of the Health Service Area (HSA) in which the hospital is located,text,Western NY,NA
+hospital_county,A description of the county in which the hospital is located.,text,Allegany,NA
+operating_certificate_number,The facility Operating Certificate Number as assigned by NYS Department of Health.,text,226700,NA
+facility_id,Permanent Facility Identifier,number,37,NA
+facility_name,"The name of the facility where services were performed based on the Permanent Facility Identifier (PFI), as maintained by the NYSDOH Division of Health Facility Planning",text,Cuba Memorial Hospital Inc,NA
+age_group,Age in years at time of discharge,text,70 or Older,NA
+zip_code_3_digits,The first three digits of the patient's zip code,text,147,NA
+gender,Patient gender,text,F,NA
+race,Patient race,text,White,NA
+ethnicity,Patient Ethnicity,text,Not Span/Hispanic,NA
+length_of_stay,The total number of patient days at an acute level and/or other than acute care level (excluding leave of absence days) (Discharge Date - Admission Date) + 1. Length of Stay greater than or equal to 120 days has been aggregated to 120+ days.,text,3,Days
+type_of_admission,A description of the manner in which the patient was admitted to the health care facility,text,Urgent,NA
+patient_disposition,The patient's destination or status upon discharge,text,Home or Self Care,NA
+discharge_year,The year of discharge,number,2016,Year
+ccs_diagnosis_code,AHRQ Clinical Classification Software (CCS) Diagnosis Category Code,number,122,NA
+ccs_diagnosis_description,AHRQ Clinical Classification Software (CCS) Diagnosis Category Description,text,Pneumonia (except that caused by tuberculosis or sexually transmitted disease),NA
+ccs_procedure_code,AHRQ Clinical Classification Software (CCS) ICD-9 Procedure Category Code,number,0,NA
+ccs_procedure_description,AHRQ Clinical Classification Software (CCS) ICD-9 Procedure Category Description,text,NO PROC,NA
+apr_drg_code,The APR-DRG Classification Code,number,139,NA
+apr_drg_description,"The APR-DRG Classification Code Description In Calendar Year 2011, Version 28 of the APR-DRG Grouper",text,Other pneumonia,NA
+apr_mdc_code,All Patient Refined Major Diagnostic Category (APR MDC) Code,number,4,NA
+apr_mdc_description,All Patient Refined Major Diagnostic Category (APR MDC) Description.,text,Diseases and Disorders of the Respiratory System,NA
+apr_severity_of_illness_code,"The APR-DRG Severity of Illness Code: 1, 2, 3, 4",number,2,NA
+apr_severity_of_illness_description,All Patient Refined Severity of Illness (APR SOI) Description,text,Moderate,NA
+apr_risk_of_mortality,"All Patient Refined Risk of Mortality (APR ROM). Minor (1), Moderate (2), Major (3) , Extreme (4)",text,Moderate,NA
+apr_medical_surgical_description,"The APR-DRG specific classification of Medical, Surgical or Not Applicable",text,Medical,NA
+payment_typology_1,A description of the type of payment for this occurrence,text,Medicare,NA
+payment_typology_2,A description of the type of payment for this occurrence,text,Private Health Insurance,NA
+payment_typology_3,A description of the type of payment for this occurrence,text,Self Pay,NA
+attending_provider_license_number,license number of attending provider,number,90335341,NA
+operating_provider_license_number,license number of providing provider,number,167816,NA
+other_provider_license_number,license number of other providing provider,number,60001564,NA
+birth_weight,The neonate birth weight in grams; rounded to nearest 100g.,number,0,grams
+abortion_edit_indicator,"A flag to indicate if the discharge record contains any indication of abortion (""N"" = No; ""Y"" = Yes)",text,N,NA
+emergency_department_indicator,"The Emergency Department Indicator is set based on the submitted revenue codes. If the record contained an Emergency Department revenue code of 045X, the indicator is set to ""Y"", otherwise it will be “N”",text,N,NA
+total_charges,Total charges for the discharge,number,3913.23,US Dollars
+total_costs,Total estimated costs for the discharge.,number,3466.83,US Dollars
+ratio_of_total_costs_to_total_charges,Ratio of total costs of hospital service to total charges,number,0.885925374,NA

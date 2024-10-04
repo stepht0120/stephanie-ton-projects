@@ -1,0 +1,13 @@
+attribute_name,description,data_type,example_vaue,unit
+encounter_id,ID of operating room encounter,numeric,10001,numbers
+date,date of OR encounter,date,2022-01-03,day
+or_suite,suite of OR encounter,numeric,1,numbers
+service,service of OR encounter,string,Podiatry,NA
+cpt_code,current procedural terminology code,numeric,28110,numbers
+cpt_description,current procedural terminology description,string,"Partial ostectomy, fifth metatarsal head",NA
+booked_time_min,time booked in OR in minutes,numeric,90,minutes
+or_schedule,OR schedule,time,2022-01-03T07:00:00,seconds
+wheels_in,time OR subject was wheeled in the suite,time,2022-01-03T07:05:00,seconds
+start_time,time operation started,time,2022-01-03T07:32:00,seconds
+end_time,time operation ended,time,"2022-01-03T09:05:00",seconds
+wheels_out,time OR subject was wheeled out of the suite,time,"2022-01-03T09:17:00",seconds

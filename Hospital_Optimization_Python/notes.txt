@@ -1,0 +1,30 @@
+# loading in data
+
+# extracting certain columns of data
+# for operatingroom.csv > load in date, or_suite, service, booked_time_min, or_schedule, 
+# wheels_in, start_time, end_time, wheels_out
+# for discharge.csv > load in age_group, gender, length_of_stay, type_of_admission, patient_disposition, 
+# discharge year, ccs_diagnosis_code, ccs_diagnosis_description, ccs_procedure_code, ccs_procedure_description, 
+# apr_severity_of_illness_code, apr_severity_of_illness_description, apr_risk_of_mortality
+
+# transforming data
+# fixing corrupt data, identifying null values
+
+# analysis of columns
+# find descriptive statistics of length of stay in the hospital, booked OR time, actual OR time, diagnosis information
+# procedure information, severity of illness
+# use histograms to showcase
+
+# trend analysis
+# identify trends that lead to longer hospital stays and OR time
+# emphasis on presentation
+# find industry standard, figure out why other stays exceed that time
+# narrow medical condition down
+# line plot
+
+# predictive analysis
+# use regression models to help predict patient flow
+# emphasis on code
+
+# visualizations
+# show current data trends of length of stay and patient stay information and predictive trends

@@ -1,0 +1,9 @@
+column name,code,meaning/description
+zip_code_3_digits,OOS,Out of State
+gender,M,Male
+gender,F,Female
+gender,U,Unknown
+abortion_edit_indicator,N,No
+abortion_edit_indicator,Y,Yes
+emergency_department_indicator,Y,Yes
+emergency_department_indicator,N,No
